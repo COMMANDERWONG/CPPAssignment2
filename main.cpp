@@ -5,13 +5,31 @@
 
 using json = nlohmann::json;
 using namespace std;
-bool isValidExit(const json &mapData, const string &currentRoom, const string &exit)
+string checkExit(const json &mapData, const string &currentRoom, const string &exit)
 {
-    return mapData["rooms"].at(currentRoom).at("exits").find(exit) != mapData["rooms"].at(currentRoom).at("exits").end();
+    for (const auto &room : mapData["rooms"])
+    {
+        if (room.at("id") == currentRoom)
+        {
+            if (room.at("id").at("exit").find(exit) != mapData.end())
+            {
+                return room.at("id").at("exit").at(exit).get<string>();
+            }
+        }
+    }
+    return "error";
 }
 void printRoom(const json &mapData, const string &currentRoom)
 {
-    cout << mapData["rooms"].at("desc") << endl;
+
+    int roomIndex;
+    for (const auto &room : mapData["rooms"])
+    {
+        if (room.at("id") == currentRoom)
+        {
+            cout << room.at("desc") << endl;
+        }
+    }
 
     // Print objects in the room
     if (mapData.find("objects") != mapData.end())
@@ -23,16 +41,16 @@ void printRoom(const json &mapData, const string &currentRoom)
                 cout << "You see a/an " << obj.at("id") << " here." << endl;
             }
         }
-    }
 
-    // Print enemy in the room
-    if (mapData.find("enemies") != mapData.end())
-    {
-        for (const auto &enemy : mapData["enemies"])
+        // Print enemy in the room
+        if (mapData.find("enemies") != mapData.end())
         {
-            if (enemy["initialroom"] == currentRoom)
+            for (const auto &enemy : mapData["enemies"])
             {
-                cout << "A/An " << enemy["id"] << " is in the room." << endl;
+                if (enemy["initialroom"] == currentRoom)
+                {
+                    cout << "A/An " << enemy["id"] << " is in the room." << endl;
+                }
             }
         }
     }
@@ -57,9 +75,10 @@ int main(int argc, char *argv[])
     cout << "Welcome to the Text Adventure Game!" << endl;
 
     string currentRoom = mapData["player"].at("initialroom");
+    printRoom(mapData, currentRoom);
+
     while (true)
     {
-        printRoom(mapData, currentRoom);
 
         string command;
         getline(cin, command);
@@ -70,9 +89,14 @@ int main(int argc, char *argv[])
         else if (command.substr(0, 3) == "go ")
         {
             string exit = command.substr(3);
-            if (isValidExit(mapData, currentRoom, exit))
+            string check = checkExit(mapData, currentRoom, exit);
+            if (check != "error")
             {
-                currentRoom = mapData["rooms"].at(currentRoom).at("exits").at(exit);
+                currentRoom = check;
+            }
+            else
+            {
+                cout << "Nothing Happened" << endl;
             }
         }
         else if (command.substr(0, 5) == "take ")
