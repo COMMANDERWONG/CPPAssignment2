@@ -7,13 +7,15 @@ using json = nlohmann::json;
 using namespace std;
 string checkExit(const json &mapData, const string &currentRoom, const string &exit)
 {
+    string temp;
     for (const auto &room : mapData["rooms"])
     {
         if (room.at("id") == currentRoom)
         {
-            if (room.at("id").at("exit").find(exit) != mapData.end())
+
+            if (room.at("exits").find(exit) != room.at("exits").end())
             {
-                return room.at("id").at("exit").at(exit).get<string>();
+                return room.at("exits").at(exit).get<string>();
             }
         }
     }
@@ -93,6 +95,7 @@ int main(int argc, char *argv[])
             if (check != "error")
             {
                 currentRoom = check;
+                printRoom(mapData, currentRoom);
             }
             else
             {
