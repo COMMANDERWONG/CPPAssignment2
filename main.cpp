@@ -92,7 +92,19 @@ int main(int argc, char *argv[])
         {
             string exit = command.substr(3);
             string check = checkExit(mapData, currentRoom, exit);
-            if (check != "error")
+
+            //check if go xxx ,where xxx should be proper command
+            string direction=command.substr(3,command.size());
+            int flag=0;
+            for (const auto &room : mapData["rooms"])
+            {
+                if (room.at("id") == direction)
+                {
+                    flag=1;
+                }
+            }
+
+            if (check != "error" && flag==1)
             {
                 currentRoom = check;
                 printRoom(mapData, currentRoom);
