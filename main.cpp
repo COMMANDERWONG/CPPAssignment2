@@ -64,7 +64,7 @@ bool checkItem(const json &mapData, const string &currentRoom, vector<string> &i
         if (item.at("id") == input && item.at("initialroom") == currentRoom && it == itemList.end())
         {
             itemList.push_back(item.at("id").get<string>());
-            cout << "You picked up " << item.at("id").get<string>() << endl;
+            cout << "You picked up " << item.at("id").get<string>() << ',' << endl;
             return true;
         }
     }
@@ -90,13 +90,13 @@ string checkKill(const json &mapData, const string &currentRoom, vector<string> 
 
             if (success == "false")
             {
-                cout << "You don't have enough items and got killed by the " << enemy.at("id").get<string>() << '.'<< endl;
+                cout << "You don't have enough items and got killed by the " << enemy.at("id").get<string>() << '.' << endl;
                 return success;
             }
             else
             {
                 success = enemy.at("id").get<string>();
-                killList.push_back(enemy.at("id").get<string>());
+                killList.push_back(success);
                 cout << "You killed " << enemy.at("id").get<string>() << endl;
                 return success;
             }
@@ -143,8 +143,6 @@ void gameOver()
 }
 void printRoom(const json &mapData, const string &currentRoom, vector<string> &itemList, vector<string> &killList)
 {
-
-    int roomIndex;
     for (const auto &room : mapData["rooms"])
     {
         if (room.at("id") == currentRoom)
@@ -179,6 +177,46 @@ void printRoom(const json &mapData, const string &currentRoom, vector<string> &i
         }
     }
 }
+bool checkWin(const json &mapData, const string &currentRoom, const vector<string> &itemList, const vector<string> &killList)
+{
+    string type = mapData["objective"]["type"].get<string>();
+    if (type == "kill")
+    {
+        for (const auto &enemy : mapData["objective"]["what"])
+        {
+            auto it = find(killList.begin(), killList.end(), enemy.get<string>());
+            if (it == killList.end())
+            {
+                return false;
+            }
+        }
+        cout << "You have killed all required enemies!" << endl;
+    }
+    else if (type == "room")
+    {
+        string finalRoom = mapData["objective"]["what"][0].get<string>();
+        if (currentRoom == finalRoom)
+        {
+            cout << "You have reached the required destination!" << endl;
+        } else {
+            return false;
+        }
+
+    }
+    else if (type == "collect")
+    {
+        for (const auto &item : mapData["objective"]["what"])
+        {
+            auto it = find(itemList.begin(), itemList.end(), item.get<string>());
+            if (it == itemList.end())
+            {
+                return false;
+            }
+        }
+        cout << "You have collected all required items!" << endl;
+    }
+    return true;
+}
 int main(int argc, char *argv[])
 {
     ifstream file(argv[1]);
@@ -198,7 +236,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    cout << "Welcome to the Text Adventure Game! Input a command when you see a '>'" << endl;
+    cout << "Welcome to the Text Adventure Game! Input a command when you see '>'" << endl;
     cout << "Input the command 'quit' to exit the game." << endl;
 
     string currentRoom = mapData["player"].at("initialroom");
@@ -206,12 +244,6 @@ int main(int argc, char *argv[])
 
     while (true)
     {
-        // Check for win condition
-        // if (hasPlayerWon(mapData, currentRoom))
-        // {
-        //     cout << "Congratulations! You have won the game!" << endl;
-        //     break;
-        // }
         cout << ">" << endl;
         string command;
         getline(cin, command);
@@ -223,18 +255,6 @@ int main(int argc, char *argv[])
         {
             string exit = command.substr(3);
             string check = checkExit(mapData, currentRoom, exit);
-
-            // check if go xxx ,where xxx should be proper command
-            // string direction = command.substr(3, command.size());
-            // int flag = 0;
-            // for (const auto &room : mapData["rooms"])
-            // {
-            //     if (room.at("id") == direction)
-            //     {
-            //         flag = 1;
-            //     }
-            // }
-
             if (check != "error")
             {
                 bool alive = enemyAttack(mapData, currentRoom, killList);
@@ -286,12 +306,27 @@ int main(int argc, char *argv[])
         {
             if (itemList.empty())
             {
-                cout << "You have no item in possession" << endl;
+                cout << "You have no item in possession." << endl;
             }
             else
             {
                 cout << "Your item(s):" << endl;
                 for (string s : itemList)
+                {
+                    cout << s << endl;
+                }
+            }
+        }
+        else if (command == "list kills")
+        {
+            if (killList.empty())
+            {
+                cout << "You have not killed anything." << endl;
+            }
+            else
+            {
+                cout << "Your kill(s):" << endl;
+                for (string s : killList)
                 {
                     cout << s << endl;
                 }
@@ -304,6 +339,12 @@ int main(int argc, char *argv[])
         else
         {
             commandError();
+        }
+        // Check for win condition
+        if (checkWin(mapData, currentRoom, itemList, killList))
+        {
+            cout << "Congratulations! You have won the game!" << endl;
+            break;
         }
     }
     return 0;
