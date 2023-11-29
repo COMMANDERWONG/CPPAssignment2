@@ -28,7 +28,6 @@ bool enemyAttack(const json &mapData, const string &currentRoom, const vector<st
             else
             {
                 int randomInt = getRandomNumber();
-                cout << randomInt << endl;
                 cout << "The " << enemy.at("id").get<string>() << " attacks you when you try to leave the room!" << endl;
                 if (randomInt <= aggressiveness)
                 {
