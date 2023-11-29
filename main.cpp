@@ -67,7 +67,7 @@ bool checkItem(const json &mapData, const string &currentRoom, vector<string> &i
         if (item.at("id") == input && item.at("initialroom") == currentRoom && it == itemList.end())
         {
             itemList.push_back(item.at("id").get<string>());
-            cout << "You picked up " << item.at("id").get<string>() << ',' << endl;
+            cout << "You picked up " << item.at("id").get<string>() << '.' << endl;
             return true;
         }
     }
@@ -127,7 +127,7 @@ bool checkLook(const json &mapData, const string &currentRoom, vector<string> &k
     for (const auto &item : mapData["objects"])
     {
         auto it = find(itemList.begin(), itemList.end(), input);
-        if (item.at("id") == input && item.at("initialroom") == currentRoom || it != itemList.end())
+        if (item.at("id") == input && item.at("initialroom") == currentRoom || item.at("id") == input && it != itemList.end())
         {
             cout << item.at("desc").get<string>() << endl;
             return true;
