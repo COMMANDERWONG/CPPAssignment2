@@ -21,10 +21,7 @@ bool enemyAttack(const json &mapData, const string &currentRoom, const vector<st
             }
             else
             {
-                random_device rd;
-                mt19937 gen(rd());
-                uniform_int_distribution<int> dis(1, 100);
-                int randomInt = dis(gen);
+                int randomInt = rand() % 100 + 1;
                 cout << "The " << enemy.at("id").get<string>() << " attacks you when you try to leave the room!" << endl;
                 if (randomInt <= aggressiveness)
                 {
@@ -198,10 +195,11 @@ bool checkWin(const json &mapData, const string &currentRoom, const vector<strin
         if (currentRoom == finalRoom)
         {
             cout << "You have reached the required destination!" << endl;
-        } else {
+        }
+        else
+        {
             return false;
         }
-
     }
     else if (type == "collect")
     {
