@@ -7,6 +7,12 @@
 
 using json = nlohmann::json;
 using namespace std;
+
+int getRandomNumber()
+{
+    srand(time(0));
+    return rand() % 100 + 1;
+}
 bool enemyAttack(const json &mapData, const string &currentRoom, const vector<string> &killList)
 {
     for (const auto &enemy : mapData["enemies"])
@@ -21,7 +27,8 @@ bool enemyAttack(const json &mapData, const string &currentRoom, const vector<st
             }
             else
             {
-                int randomInt = rand() % 100 + 1;
+                int randomInt = getRandomNumber();
+                cout << randomInt << endl;
                 cout << "The " << enemy.at("id").get<string>() << " attacks you when you try to leave the room!" << endl;
                 if (randomInt <= aggressiveness)
                 {
