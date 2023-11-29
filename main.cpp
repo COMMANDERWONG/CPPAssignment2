@@ -17,7 +17,7 @@ bool enemyAttack(const json &mapData, const string &currentRoom, const vector<st
             int aggressiveness = enemy.at("aggressiveness").get<int>();
             if (aggressiveness == 0)
             {
-                cout << "The " << enemy.at("id").get<string>() << " does nothing when you try to leave the room!" << endl;
+                cout << "The " << enemy.at("id").get<string>() << " does nothing when you try to leave the room." << endl;
             }
             else
             {
@@ -81,7 +81,7 @@ string checkKill(const json &mapData, const string &currentRoom, vector<string> 
             for (const auto &item : enemy["killedby"])
             {
                 auto it = find(itemList.begin(), itemList.end(), item);
-                if (it == killList.end())
+                if (it == itemList.end())
                 {
                     success = "false";
                     break;
@@ -90,7 +90,7 @@ string checkKill(const json &mapData, const string &currentRoom, vector<string> 
 
             if (success == "false")
             {
-                cout << "You don't have enough items and got killed by " << enemy.at("id").get<string>() << endl;
+                cout << "You don't have enough items and got killed by the " << enemy.at("id").get<string>() << '.'<< endl;
                 return success;
             }
             else
@@ -134,12 +134,12 @@ bool checkLook(const json &mapData, const string &currentRoom, vector<string> &k
 }
 void commandError()
 {
-    cout << "Nothing Happened" << endl;
+    cout << "Nothing Happened." << endl;
 }
 void gameOver()
 {
     cout << "GAME OVER" << endl;
-    cout << "Good luck next time" << endl;
+    cout << "Good luck next time." << endl;
 }
 void printRoom(const json &mapData, const string &currentRoom, vector<string> &itemList, vector<string> &killList)
 {
@@ -206,6 +206,12 @@ int main(int argc, char *argv[])
 
     while (true)
     {
+        // Check for win condition
+        // if (hasPlayerWon(mapData, currentRoom))
+        // {
+        //     cout << "Congratulations! You have won the game!" << endl;
+        //     break;
+        // }
         cout << ">" << endl;
         string command;
         getline(cin, command);
@@ -299,13 +305,6 @@ int main(int argc, char *argv[])
         {
             commandError();
         }
-
-        // Check for win condition
-        // if (hasPlayerWon(mapData, currentRoom))
-        // {
-        //     cout << "Congratulations! You have won the game!" << endl;
-        //     break;
-        // }
     }
     return 0;
 }
