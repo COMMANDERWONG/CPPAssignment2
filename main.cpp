@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
     }
 
     cout << "Welcome to the Text Adventure Game! Input a command when you see a '>'" << endl;
+    cout << "Input the command 'quit' to exit the game." << endl;
 
     string currentRoom = mapData["player"].at("initialroom");
     printRoom(mapData, currentRoom, itemList, killList);
@@ -289,6 +290,10 @@ int main(int argc, char *argv[])
                     cout << s << endl;
                 }
             }
+        }
+        else if (command == "quit")
+        {
+            break;
         }
         else
         {
