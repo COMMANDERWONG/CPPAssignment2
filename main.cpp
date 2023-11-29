@@ -127,7 +127,7 @@ bool checkLook(const json &mapData, const string &currentRoom, vector<string> &k
     for (const auto &item : mapData["objects"])
     {
         auto it = find(itemList.begin(), itemList.end(), input);
-        if (item.at("id") == input && item.at("initialroom") == currentRoom || item.at("id") == input && it != itemList.end())
+        if ((item.at("id") == input && item.at("initialroom") == currentRoom) || (item.at("id") == input && it != itemList.end()))
         {
             cout << item.at("desc").get<string>() << endl;
             return true;
@@ -197,15 +197,15 @@ bool checkWin(const json &mapData, const string &currentRoom, const vector<strin
     }
     else if (type == "room")
     {
-        string finalRoom = mapData["objective"]["what"][0].get<string>();
-        if (currentRoom == finalRoom)
+        for (const auto &room : mapData["objective"]["what"])
         {
-            cout << "You have reached the required destination!" << endl;
+            if (currentRoom == room)
+            {
+                cout << "You have reached the designated room." << endl;
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
     else if (type == "collect")
     {
@@ -316,21 +316,6 @@ int main(int argc, char *argv[])
             {
                 cout << "Your item(s):" << endl;
                 for (string s : itemList)
-                {
-                    cout << s << endl;
-                }
-            }
-        }
-        else if (command == "list kills")
-        {
-            if (killList.empty())
-            {
-                cout << "You have not killed anything." << endl;
-            }
-            else
-            {
-                cout << "Your kill(s):" << endl;
-                for (string s : killList)
                 {
                     cout << s << endl;
                 }
