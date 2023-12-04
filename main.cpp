@@ -116,7 +116,7 @@ bool checkLook(const json &mapData, const string &currentRoom, vector<string> &k
     for (const auto &enemy : mapData["enemies"])
     {
         auto it = find(killList.begin(), killList.end(), input);
-        if ((enemy.at("id") == input && enemy.at("initialroom") == currentRoom && it == itemList.end())) // check if the enemy is in the room
+        if ((enemy.at("id") == input && enemy.at("initialroom") == currentRoom && it == killList.end())) // check if the enemy is in the room and not killed
         {
             cout << enemy.at("desc").get<string>() << endl;
             return true;
