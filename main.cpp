@@ -179,7 +179,7 @@ void printRoom(const json &mapData, const string &currentRoom, vector<string> &i
         }
     }
 }
-bool checkWin(const json &mapData, const string &currentRoom, const vector<string> &itemList, const vector<string> &killList) // check if the user has win the game
+bool checkWin(const json &mapData, const string &currentRoom, const vector<string> &itemList, const vector<string> &killList) // check if the user has won the game
 {
     string type = mapData["objective"]["type"].get<string>();
     if (type == "kill")
