@@ -111,8 +111,18 @@ string checkKill(const json &mapData, const string &currentRoom, vector<string> 
 
     return success;
 }
-bool checkLook(const json &mapData, const string &currentRoom, vector<string> &killList, vector<string> &itemList, string &input) // check if object exist inside the currentRoom or picked by user.
+bool checkLook(const json &mapData, const string &currentRoom, vector<string> &killList, vector<string> &itemList, string &input) // check if object exist inside the currentRoom or picked by user or the enemy exist in the currentRoom.
 {
+    for (const auto &item : mapData["enemies"])
+    {
+        auto it = find(itemList.begin(), itemList.end(), input);
+        if ((item.at("id") == input && item.at("initialroom") == currentRoom) || (item.at("id") == input && it != itemList.end())) // check if the enemy is in the room
+        {
+            cout << item.at("desc").get<string>() << endl;
+            return true;
+        }
+    }
+
     for (const auto &item : mapData["objects"])
     {
         auto it = find(itemList.begin(), itemList.end(), input);
@@ -289,7 +299,7 @@ int main(int argc, char *argv[])
         else if (command.substr(0, 5) == "look ")
         {
             string target = command.substr(5);                                        // stores name of object
-            bool check = checkLook(mapData, currentRoom, killList, itemList, target); // check if object exist inside the currentRoom or picked by user.
+            bool check = checkLook(mapData, currentRoom, killList, itemList, target); // check if object or enemy exist inside the currentRoom or picked by user.
             if (!check)
             {
                 commandError();
