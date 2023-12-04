@@ -116,7 +116,7 @@ bool checkLook(const json &mapData, const string &currentRoom, vector<string> &k
     for (const auto &item : mapData["objects"])
     {
         auto it = find(itemList.begin(), itemList.end(), input);
-        if ((item.at("id") == input && item.at("initialroom") == currentRoom) || (item.at("id") == input && it != itemList.end())) // check if the object is in the room or picked by user
+        if ((item.at("id") == input && item.at("initialroom") == currentRoom && it == itemList.end()) || (item.at("id") == input && it != itemList.end())) // check if the object is in the room or picked by user
         {
             cout << item.at("desc").get<string>() << endl;
             return true;
