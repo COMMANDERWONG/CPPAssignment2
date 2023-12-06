@@ -9,7 +9,7 @@ using namespace std;
 
 int getRandomNumber()
 {
-	srand(time(0));          // Seed the random number generator with the current time
+	srand(time(0));			 // Seed the random number generator with the current time
 	return rand() % 100 + 1; // Generate a random number between 1 and 100
 }
 bool enemyAttack(const json &mapData, const string &currentRoom, const vector<string> &killList)
@@ -17,7 +17,7 @@ bool enemyAttack(const json &mapData, const string &currentRoom, const vector<st
 	for (const auto &enemy : mapData["enemies"])
 	{
 		auto it = find(killList.begin(), killList.end(), enemy.at("id").get<string>()); // find the enemy which the user has already killed
-		if (enemy.at("initialroom") == currentRoom && it == killList.end())             // if user has not killed the enemy
+		if (enemy.at("initialroom") == currentRoom && it == killList.end())				// if user has not killed the enemy
 		{
 			int aggressiveness = enemy.at("aggressiveness").get<int>();
 			if (aggressiveness == 0)
@@ -145,6 +145,7 @@ void gameOver()
 }
 void printRoom(const json &mapData, const string &currentRoom, vector<string> &itemList, vector<string> &killList)
 {
+	bool flag;
 	for (const auto &room : mapData["rooms"])
 	{
 		if (room.at("id") == currentRoom)
@@ -156,27 +157,39 @@ void printRoom(const json &mapData, const string &currentRoom, vector<string> &i
 	// Print objects in the room
 	if (mapData.find("objects") != mapData.end())
 	{
+		flag = true;
 		for (const auto &obj : mapData["objects"])
 		{
 			auto it = find(itemList.begin(), itemList.end(), obj.at("id").get<string>());
 			if (obj.at("initialroom") == currentRoom && it == itemList.end())
 			{
-				cout << "You see a/an " << obj.at("id").get<string>() << " here." << endl;
+				if (flag)
+				{
+					cout << "These item(s) are in the room:" << endl;
+					flag = false;
+				}
+				cout << '*' << obj.at("id").get<string>() << endl;
 			}
 		}
 	}
-			// Print enemy in the room
-		if (mapData.find("enemies") != mapData.end())
+	// Print enemy in the room
+	if (mapData.find("enemies") != mapData.end())
+	{
+		flag = true;
+		for (const auto &enemy : mapData["enemies"])
 		{
-			for (const auto &enemy : mapData["enemies"])
+			auto it = find(killList.begin(), killList.end(), enemy.at("id").get<string>());
+			if (enemy["initialroom"] == currentRoom && it == killList.end())
 			{
-				auto it = find(killList.begin(), killList.end(), enemy.at("id").get<string>());
-				if (enemy["initialroom"] == currentRoom && it == killList.end())
+				if (flag)
 				{
-					cout << "A/An " << enemy["id"].get<string>() << " is in the room." << endl;
+					cout << "These enemy(ies) are in the room:" << endl;
+					flag = false;
 				}
+				cout << '*' << enemy.at("id").get<string>() << endl;
 			}
 		}
+	}
 }
 bool checkWin(const json &mapData, const string &currentRoom, const vector<string> &itemList, const vector<string> &killList) // check if the user has won the game
 {
@@ -223,7 +236,7 @@ int main(int argc, char *argv[])
 {
 	ifstream file(argv[1]);
 
-	json mapData;            // store json data
+	json mapData;			 // store json data
 	vector<string> killList; // store list of enemies killed by user
 	vector<string> itemList; // store list of item(object) picked by user
 
@@ -275,7 +288,7 @@ int main(int argc, char *argv[])
 		}
 		else if (command.substr(0, 5) == "take ")
 		{
-			string item = command.substr(5);                      // stores the name of item(object)
+			string item = command.substr(5);					  // stores the name of item(object)
 			if (!checkItem(mapData, currentRoom, itemList, item)) // check if the user has already picked the object
 			{
 				commandError();
@@ -283,7 +296,7 @@ int main(int argc, char *argv[])
 		}
 		else if (command.substr(0, 5) == "kill ")
 		{
-			string kill = command.substr(5);                                          // stores the name of enemy
+			string kill = command.substr(5);										  // stores the name of enemy
 			string check = checkKill(mapData, currentRoom, killList, itemList, kill); // check if the user can kill the enemy using the object picked. if user can killed the enemy then name of enemy will  be added to the killList
 			if (check == "false")
 			{
@@ -297,7 +310,7 @@ int main(int argc, char *argv[])
 		}
 		else if (command.substr(0, 5) == "look ")
 		{
-			string target = command.substr(5);                                        // stores name of object
+			string target = command.substr(5);										  // stores name of object
 			bool check = checkLook(mapData, currentRoom, killList, itemList, target); // check if object or enemy exist inside the currentRoom or picked by user.
 			if (!check)
 			{
