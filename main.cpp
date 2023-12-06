@@ -232,6 +232,10 @@ bool checkWin(const json &mapData, const string &currentRoom, const vector<strin
 		cout << "You have collected all required items!" << endl;
 		return true;
 	}
+	else
+	{
+		return false;
+	}
 }
 int main(int argc, char *argv[])
 {
