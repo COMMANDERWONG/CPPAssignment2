@@ -145,7 +145,7 @@ void gameOver()
 }
 void printRoom(const json &mapData, const string &currentRoom, vector<string> &itemList, vector<string> &killList)
 {
-	bool flag;
+	bool flag; // to check if there is enemy or object in the room
 	for (const auto &room : mapData["rooms"])
 	{
 		if (room.at("id") == currentRoom)
