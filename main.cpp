@@ -168,7 +168,7 @@ void printRoom(const json &mapData, const string &currentRoom, vector<string> &i
 					cout << "These item(s) are in the room:" << endl;
 					flag = false;
 				}
-				cout << '*' << obj.at("id").get<string>() << endl;
+				cout << '-' << obj.at("id").get<string>() << endl;
 			}
 		}
 	}
@@ -186,7 +186,7 @@ void printRoom(const json &mapData, const string &currentRoom, vector<string> &i
 					cout << "These enemy(ies) are in the room:" << endl;
 					flag = false;
 				}
-				cout << '*' << enemy.at("id").get<string>() << endl;
+				cout << '-' << enemy.at("id").get<string>() << endl;
 			}
 		}
 	}
@@ -205,6 +205,7 @@ bool checkWin(const json &mapData, const string &currentRoom, const vector<strin
 			}
 		}
 		cout << "You have killed all required enemies!" << endl;
+		return true;
 	}
 	else if (type == "room")
 	{
@@ -229,8 +230,8 @@ bool checkWin(const json &mapData, const string &currentRoom, const vector<strin
 			}
 		}
 		cout << "You have collected all required items!" << endl;
+		return true;
 	}
-	return true;
 }
 int main(int argc, char *argv[])
 {
@@ -328,7 +329,7 @@ int main(int argc, char *argv[])
 				cout << "Your item(s):" << endl;
 				for (string s : itemList)
 				{
-					cout << s << endl;
+					cout << '-' << s << endl;
 				}
 			}
 		}
